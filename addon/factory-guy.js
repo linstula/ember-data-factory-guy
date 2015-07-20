@@ -496,9 +496,9 @@ var FactoryGuy = function () {
             var relationshipType = isPolymorphic ? Ember.String.dasherize(embeddedFixture.type) : relationship.type;
             var data = convertSingle(relationshipType, embeddedFixture, included);
             addToIncluded(included, data);
-            relationships[relationship.key] = {data: normalizeJSONAPIAssociation(data, relationship)};
+            relationships[Ember.String.dasherize(relationship.key)] = {data: normalizeJSONAPIAssociation(data, relationship)};
           } else if (Ember.typeOf(belongsToRecord) === 'instance') {
-            relationships[relationship.key] = {data: normalizeJSONAPIAssociation(belongsToRecord, relationship)};
+            relationships[Ember.String.dasherize(relationship.key)] = {data: normalizeJSONAPIAssociation(belongsToRecord, relationship)};
           }
         } else if (relationship.kind === 'hasMany') {
           var hasManyRecords = fixture[relationship.key];
@@ -514,7 +514,7 @@ var FactoryGuy = function () {
                 return normalizeJSONAPIAssociation(hasManyRecord, relationship);
               }
             });
-            relationships[relationship.key] = {data: records};
+            relationships[Ember.String.dasherize(relationship.key)] = {data: records};
           }
         }
       }
