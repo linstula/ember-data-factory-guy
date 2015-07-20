@@ -461,7 +461,7 @@ var FactoryGuy = function () {
     var attributes = {};
     store.modelFor(modelName).eachAttribute(function (attribute) {
       if (fixture.hasOwnProperty(attribute)) {
-        attributes[attribute] = fixture[attribute];
+        attributes[Ember.String.dasherize(attribute)] = fixture[attribute];
       }
     });
     return attributes;
