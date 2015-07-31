@@ -78,7 +78,7 @@ var JSONAPIConverter = function (store) {
   var extractAttributes = function (modelName, fixture) {
     var attributes = {};
     store.modelFor(modelName).eachAttribute(function (attribute) {
-      var attributeKey = attribute;
+      var attributeKey = Ember.String.dasherize(attribute);
       if (fixture.hasOwnProperty(attribute)) {
         attributes[attributeKey] = fixture[attribute];
       }
@@ -111,6 +111,7 @@ var JSONAPIConverter = function (store) {
 
     store.modelFor(modelName).eachRelationship(function (key, relationship) {
       var isPolymorphic = relationship.options.polymorphic;
+      var relationshipKey = Ember.String.dasherize(relationship.key);
       if (fixture.hasOwnProperty(key)) {
         if (relationship.kind === 'belongsTo') {
           var belongsToRecord = fixture[relationship.key];
@@ -120,9 +121,9 @@ var JSONAPIConverter = function (store) {
             var relationshipType = isPolymorphic ? Ember.String.dasherize(embeddedFixture.type) : relationship.type;
             var data = convertSingle(relationshipType, embeddedFixture, included);
             addToIncluded(included, data);
-            relationships[relationship.key] = {data: normalizeJSONAPIAssociation(data, relationship)};
+            relationships[relationshipKey] = {data: normalizeJSONAPIAssociation(data, relationship)};
           } else if (Ember.typeOf(belongsToRecord) === 'instance') {
-            relationships[relationship.key] = {data: normalizeJSONAPIAssociation(belongsToRecord, relationship)};
+            relationships[relationshipKey] = {data: normalizeJSONAPIAssociation(belongsToRecord, relationship)};
           }
         } else if (relationship.kind === 'hasMany') {
           var hasManyRecords = fixture[relationship.key];
@@ -138,7 +139,7 @@ var JSONAPIConverter = function (store) {
                 return normalizeJSONAPIAssociation(hasManyRecord, relationship);
               }
             });
-            relationships[relationship.key] = {data: records};
+            relationships[relationshipKey] = {data: records};
           }
         }
       }
